@@ -41,7 +41,7 @@ namespace MRPApp.View.Store
             }
             else
             {
-               /* var cnt = Logic.DataAccess.GetStores().Where(u => u.StoreName.Equals(TxtStoreName.Text)).Count();
+                /*var cnt = Logic.DataAccess.GetStores().Where(u => u.StoreName.Equals(TxtStoreName.Text)).Count();
                 if (cnt > 0)
                 {
                     LblStoreName.Visibility = Visibility.Visible;
@@ -65,35 +65,35 @@ namespace MRPApp.View.Store
             bool isValid = true; // 입력된 값이 모두 만족하는지 판별하는 플래그
             LblStoreName.Visibility = LblStoreLocation.Visibility = Visibility.Hidden;
 
-            //var store = new Model.Store();
-            //isValid = IsValidInput(); // 유효성체크(필수)
+            /*var store = new Model.Store();
+            isValid = IsValidInput(); // 유효성체크(필수)
 
-            //if (isValid)
-            //{
-            //    //MessageBox.Show("DB 입력처리!");
-            //    store.StoreName = TxtStoreName.Text;
-            //    store.StoreLocation = TxtStoreLocation.Text;
+            if (isValid)
+            {
+                //MessageBox.Show("DB 입력처리!");
+                store.StoreName = TxtStoreName.Text;
+                store.StoreLocation = TxtStoreLocation.Text;
 
-            //    try
-            //    {
-            //        var result = Logic.DataAccess.SetStore(store);  // Logic.DataAccess.SetUser(user);
-            //        if (result == 0)
-            //        {
-            //            // 수정 안됨
-            //            Commons.LOGGER.Error("AddStore.xaml.cs 창고정보 저장오류 발생");
-            //            Commons.ShowMessageAsync("오류", "저장시 오류가 발생했습니다");                       
-            //            return;
-            //        }
-            //        else
-            //        {
-            //            NavigationService.Navigate(new StoreList());
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Commons.LOGGER.Error($"예외발생 : {ex}");
-            //    }
-            //}
+                try
+                {
+                    var result = Logic.DataAccess.SetStore(store);  // Logic.DataAccess.SetUser(user);
+                    if (result == 0)
+                    {
+                        // 수정 안됨
+                        Commons.LOGGER.Error("AddStore.xaml.cs 창고정보 저장오류 발생");
+                        Commons.ShowMessageAsync("오류", "저장시 오류가 발생했습니다");                       
+                        return;
+                    }
+                    else
+                    {
+                        NavigationService.Navigate(new StoreList());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Commons.LOGGER.Error($"예외발생 : {ex}");
+                }
+            }*/
         }
 
         private void TxtStoreName_LostFocus(object sender, RoutedEventArgs e)

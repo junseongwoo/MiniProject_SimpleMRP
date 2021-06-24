@@ -17,7 +17,7 @@ namespace MRPApp.Model
         public int PrcIdx { get; set; }
         public int SchIdx { get; set; }
         public string PrcCD { get; set; }
-        public System.DateTime ProDate { get; set; }
+        public System.DateTime PrcDate { get; set; }
         public Nullable<int> PrcLoadTime { get; set; }
         public Nullable<System.TimeSpan> PrcStartTime { get; set; }
         public Nullable<System.TimeSpan> PrcEndTime { get; set; }

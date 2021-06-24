@@ -31,23 +31,24 @@ namespace MRPApp
             InitializeComponent();
         }       
 
+        private void MetroWindow_ContentRendered(object sender, EventArgs e)
+        {
+        }
 
         private void MetroWindow_Activated(object sender, EventArgs e)
         {
-            //if (Commons.LOGINED_USER != null)
-            //    BtnLoginedId.Content = $"{Commons.LOGINED_USER.UserEmail} ({Commons.LOGINED_USER.UserName})";
+            /*if (Commons.LOGINED_USER != null)
+                BtnLoginedId.Content = $"{Commons.LOGINED_USER.UserEmail} ({Commons.LOGINED_USER.UserName})";*/
         }
-
 
         private async void BtnExit_Click(object sender, RoutedEventArgs e)
         {
-            var result = await this.ShowMessageAsync("종료", "프로그램을 종료하시겠습니까?",
-                   MessageDialogStyle.AffirmativeAndNegative, null);
+            var result = await this.ShowMessageAsync("종료", "프로그램을 종료하시겠습니까?", 
+                MessageDialogStyle.AffirmativeAndNegative, null);
 
-            if (result == MessageDialogResult.Affirmative)  // 프로그램 종료창에서 OK를 누르면 프로그램이 종료됨
+            if (result == MessageDialogResult.Affirmative)
                 Application.Current.Shutdown();
         }
-
 
         private async void BtnAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -66,7 +67,7 @@ namespace MRPApp
         {
             try
             {
-                // ActiveControl.Content = new UserList();
+                /*ActiveControl.Content = new UserList();*/
             }
             catch (Exception ex)
             {
@@ -88,7 +89,7 @@ namespace MRPApp
             }
         }
 
-        private void BtnSetting_click(object sender, RoutedEventArgs e)
+        private void BtnSetting_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -96,14 +97,9 @@ namespace MRPApp
             }
             catch (Exception ex)
             {
-                Commons.LOGGER.Error($"예외발생 BtnSetting_click : {ex}");
+                Commons.LOGGER.Error($"예외발생 BtnSetting_Click : {ex}");
                 this.ShowMessageAsync("예외", $"예외발생 : {ex}");
             }
-        }
-
-        private void MetroWindow_ContentRendered(object sender, EventArgs e)
-        {
-
         }
     }
 }

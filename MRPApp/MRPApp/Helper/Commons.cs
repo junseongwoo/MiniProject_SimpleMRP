@@ -14,7 +14,6 @@ namespace MRPApp
         // NLog 정적 인스턴스 생성
         public static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
 
-
         /// <summary>
         /// MD5 암호화처리 메서드
         /// </summary>
@@ -38,7 +37,7 @@ namespace MRPApp
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        internal static bool IsValidEmail(string email)
+        public static bool IsValidEmail(string email)
         {
             return Regex.IsMatch(email, @"[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?");
         }

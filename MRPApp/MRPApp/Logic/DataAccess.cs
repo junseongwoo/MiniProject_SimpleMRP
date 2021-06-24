@@ -11,33 +11,31 @@ namespace MRPApp.Logic
     public class DataAccess
     {
         // 셋팅테이블에서 데이터 가져오기
-        internal static List<Settings> GetSettings()
+        public static List<Settings> GetSettings()
         {
             List<Model.Settings> settings;
 
             using (var ctx = new MRPEntities())
-            {
-                settings = ctx.Settings.ToList();
-            }
+                settings = ctx.Settings.ToList(); // SELECT
 
             return settings;
         }
 
-        internal static int SetSettings(Settings item)
+        public static int SetSettings(Settings item)
         {
             using (var ctx = new MRPEntities())
             {
-                ctx.Settings.AddOrUpdate(item);
-                return ctx.SaveChanges();
+                ctx.Settings.AddOrUpdate(item); // INSERT or UPDATE
+                return ctx.SaveChanges(); // COMMIT
             }
         }
 
-        internal static int DelSettings(Settings item)
+        public static int DelSettings(Settings item)
         {
             using (var ctx = new MRPEntities())
             {
-                var obj = ctx.Settings.Find(item.BasicCode);
-                ctx.Settings.Remove(obj);
+                var obj = ctx.Settings.Find(item.BasicCode); // 검색한 실제 데이터를 삭제
+                ctx.Settings.Remove(obj); // DELETE
                 return ctx.SaveChanges();
             }
         }

@@ -12,7 +12,7 @@
           <Property Name="PrcIdx" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SchIdx" Type="int" Nullable="false" />
           <Property Name="PrcCD" Type="char" MaxLength="14" Nullable="false" />
-          <Property Name="ProDate" Type="date" Nullable="false" />
+          <Property Name="PrcDate" Type="date" Nullable="false" />
           <Property Name="PrcLoadTime" Type="int" />
           <Property Name="PrcStartTime" Type="time" Precision="7" />
           <Property Name="PrcEndTime" Type="time" Precision="7" />
@@ -133,7 +133,7 @@
           <Property Name="PrcIdx" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SchIdx" Type="Int32" Nullable="false" />
           <Property Name="PrcCD" Type="String" MaxLength="14" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="ProDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PrcDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="PrcLoadTime" Type="Int32" />
           <Property Name="PrcStartTime" Type="Time" Precision="7" />
           <Property Name="PrcEndTime" Type="Time" Precision="7" />
@@ -262,7 +262,7 @@
                 <ScalarProperty Name="PrcIdx" ColumnName="PrcIdx" />
                 <ScalarProperty Name="SchIdx" ColumnName="SchIdx" />
                 <ScalarProperty Name="PrcCD" ColumnName="PrcCD" />
-                <ScalarProperty Name="ProDate" ColumnName="ProDate" />
+                <ScalarProperty Name="PrcDate" ColumnName="PrcDate" />
                 <ScalarProperty Name="PrcLoadTime" ColumnName="PrcLoadTime" />
                 <ScalarProperty Name="PrcStartTime" ColumnName="PrcStartTime" />
                 <ScalarProperty Name="PrcEndTime" ColumnName="PrcEndTime" />

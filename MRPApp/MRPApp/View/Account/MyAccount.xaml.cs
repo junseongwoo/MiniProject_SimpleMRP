@@ -18,14 +18,14 @@ namespace MRPApp.View.Account
         {
             try
             {
-                //var user = Commons.LOGINED_USER;
-                //TxtUserID.Text = user.UserID.ToString();
-                //TxtUserIdentityNumber.Text = user.UserIdentityNumber.ToString();
-                //TxtUserSurName.Text = user.UserSurname.ToString();
-                //TxtUserName.Text = user.UserName.ToString();
-                //TxtUserEmail.Text = user.UserEmail.ToString();
-                //TxtUserAdmin.Text = user.UserAdmin.ToString();
-                //TxtUserActivated.Text = user.UserActivated.ToString();
+                /*var user = Commons.LOGINED_USER;
+                TxtUserID.Text = user.UserID.ToString();
+                TxtUserIdentityNumber.Text = user.UserIdentityNumber.ToString();
+                TxtUserSurName.Text = user.UserSurname.ToString();
+                TxtUserName.Text = user.UserName.ToString();
+                TxtUserEmail.Text = user.UserEmail.ToString();
+                TxtUserAdmin.Text = user.UserAdmin.ToString();
+                TxtUserActivated.Text = user.UserActivated.ToString();*/
             }
             catch (Exception ex)
             {
