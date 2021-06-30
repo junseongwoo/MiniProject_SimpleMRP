@@ -41,46 +41,42 @@
                VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left" />
         <!-- 제목입력 끝 -->
 
-        <!-- 버튼영역 시작 -->
-        <StackPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
-
-        </StackPanel>
-        <!-- 버튼영역 끝 -->
-
         <!-- 컨텐츠영역 시작 -->
-        <Grid Grid.Row="1" Grid.Column="1" Margin="5">
+        <Grid Grid.Row="1" Grid.Column="1" Margin="3,6,7,4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
             <Button x:Name="BtnStartProcess" 
-                    Content="시작" 
-                    FontSize="12" 
-                    Background="DarkSlateBlue" 
+                    FontSize="12"
+                    Background="DarkSlateBlue"
                     Foreground="White"
-                    Width="90" 
-                    HorizontalAlignment="Left" 
-                    Click="BtnStartProcess_Click" ></Button>
+                    Width="90"
+                    HorizontalAlignment="Left"
+                    Content="시작" 
+                    Click="BtnStartProcess_Click"></Button>
 
-            <!-- Like HMI -->
+            <!-- LIKE HMI -->
             <Canvas Grid.Row="1">
-                <Image x:Name="Gear1"
-                       HorizontalAlignment="Left"
+                <Image x:Name="Gear1" HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Height="100" Width="100"
-                       Source="/MRPApp;component/Resources/gear.png" Canvas.Left="83" Canvas.Top="273"/>
-                <Image x:Name="Gear2" 
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Height="100" Width="100"
-                       Source="/MRPApp;component/Resources/gear.png" Canvas.Left="591" Canvas.Top="273"/>
-                <Image x:Name="Sensor" 
-                       Width="100" Height="100"
-                       Source="/MRPApp;component/Resources/sensor.png" Canvas.Left="482" Canvas.Top="46"></Image>
-                <Image Source="/MRPApp;component/Resources/belt.png" Canvas.Left="70" Canvas.Top="243" Height="166" Width="636"></Image>
-                <Rectangle x:Name="Product" Height="50" Width="50"
-                           Stroke="Black" Fill="Gray" Canvas.Left="355" Canvas.Top="193"></Rectangle>
+                       Source="/MRPApp;component/Resources/gear.png" Canvas.Left="87" Canvas.Top="250"
+                       ></Image>
+                <Image x:Name="Gear2" HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Height="100" Width="100"
+                        Source="/MRPApp;component/Resources/gear.png" Canvas.Left="582" Canvas.Top="250" />
+                <Image  x:Name="Sensor"
+                        Width="100" Height="100" 
+                        Source="/MRPApp;component/Resources/sensor.png" Canvas.Left="523" Canvas.Top="72"
+                       ></Image>
+                <Image Source="/MRPApp;component/Resources/belt.png" Canvas.Left="74" Canvas.Top="239" ></Image>
+                <Rectangle 
+                    x:Name="Product" Height="50" Width="50" Canvas.Left="151" Canvas.Top="189"
+                    Stroke="Black" Fill="Gray"
+                    ></Rectangle>
             </Canvas>
         </Grid>
         <!-- 컨텐츠영역 끝 -->
@@ -88,10 +84,10 @@
         <!-- 모니터링영역 -->
         <Grid Grid.Row="1" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="130" />
@@ -99,12 +95,11 @@
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="공정일" FontSize="20" FontFamily="나눔고딕"/>
-            <Label x:Name="LblProcessDate" Grid.Row="0" Grid.Column="1" Content="2021-06-27" FontSize="20" FontFamily="나눔고딕"/>
+            <Label x:Name="LblProcessDate" Grid.Row="0" Grid.Column="1" Content="2021-06-27" FontSize="20" FontFamily="나눔고딕" />
             <Label Grid.Row="1" Grid.Column="0" Content="공정로드타임" FontSize="20" FontFamily="나눔고딕"/>
-            <Label x:Name="LblSchLoadTime" Grid.Row="1" Grid.Column="1" Content="90초" FontSize="20" FontFamily="나눔고딕"/>
+            <Label x:Name="LblSchLoadTime" Grid.Row="1" Grid.Column="1" Content="90 초" FontSize="20" FontFamily="나눔고딕" />
             <Label Grid.Row="2" Grid.Column="0" Content="계획수량" FontSize="20" FontFamily="나눔고딕"/>
-            <Label x:Name="LblSchAmount" Grid.Row="2" Grid.Column="1" Content="100개" FontSize="20" FontFamily="나눔고딕"/>
+            <Label x:Name="LblSchAmount" Grid.Row="2" Grid.Column="1" Content="100 개" FontSize="20" FontFamily="나눔고딕" />
         </Grid>
-        <!-- 모니터링영역 끝 -->
     </Grid>
 </Page>

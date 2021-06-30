@@ -68,8 +68,11 @@ namespace MRPApp.View.Schedule
             item.PlantCode = CboPlantCode.SelectedValue.ToString();
             item.SchDate = DateTime.Parse(DtpSchDate.Text);
             item.SchLoadTime = int.Parse(TxtSchLoadTime.Text);
-            item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
-            item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchStartTime.SelectedDateTime != null)
+                item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchEndTime.SelectedDateTime != null)
+                item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+
             item.SchFacilityID = CboSchFacilityID.SelectedValue.ToString();
             item.SchAmount = (int)NudSchAmount.Value;
 
@@ -117,7 +120,7 @@ namespace MRPApp.View.Schedule
                 isValid = false;
             }
 
-            if (CboPlantCode.SelectedValue != null && string.IsNullOrEmpty(DtpSchDate.Text))
+            if (CboPlantCode.SelectedValue != null && !string.IsNullOrEmpty(DtpSchDate.Text))
             {
                 // 공장별로 공정일일 DB값이 있으면 입력되면 안됨
                 // PC01001 (수원) 2021-06-24 
@@ -130,7 +133,6 @@ namespace MRPApp.View.Schedule
                     isValid = false;
                 }
             }
-
 
             if (string.IsNullOrEmpty(TxtSchLoadTime.Text))
             {
@@ -155,7 +157,6 @@ namespace MRPApp.View.Schedule
 
             return isValid;
         }
-
 
         // 수정데이터 검증 메서드
         public bool IsValidUpdates()
@@ -177,20 +178,19 @@ namespace MRPApp.View.Schedule
                 isValid = false;
             }
 
-            //if (CboPlantCode.SelectedValue != null && string.IsNullOrEmpty(DtpSchDate.Text))
-            //{
-            //    // 공장별로 공정일일 DB값이 있으면 입력되면 안됨
-            //    // PC01001 (수원) 2021-06-24 
-            //    var result = Logic.DataAccess.GetSchedules().Where(s => s.PlantCode.Equals(CboPlantCode.SelectedValue.ToString()))
-            //        .Where(d => d.SchDate.Equals(DateTime.Parse(DtpSchDate.Text))).Count();
-            //    if (result > 0)
-            //    {
-            //        LblSchDate.Visibility = Visibility.Visible;
-            //        LblSchDate.Text = "해당공장 공정일에 계획이 이미있습니다";
-            //        isValid = false;
-            //    }
-            //}
-
+            /*if (CboPlantCode.SelectedValue != null && !string.IsNullOrEmpty(DtpSchDate.Text))
+            {
+                // 공장별로 공정일일 DB값이 있으면 입력되면 안됨
+                // PC01001 (수원) 2021-06-24 
+                var result = Logic.DataAccess.GetSchedules().Where(s => s.PlantCode.Equals(CboPlantCode.SelectedValue.ToString()))
+                    .Where(d => d.SchDate.Equals(DateTime.Parse(DtpSchDate.Text))).Count();
+                if (result > 0)
+                {
+                    LblSchDate.Visibility = Visibility.Visible;
+                    LblSchDate.Text = "해당공장 공정일에 계획이 이미있습니다";
+                    isValid = false;
+                }
+            }*/
 
             if (string.IsNullOrEmpty(TxtSchLoadTime.Text))
             {
@@ -216,15 +216,19 @@ namespace MRPApp.View.Schedule
             return isValid;
         }
 
-
         private async void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
+            if (IsValidUpdates() != true) return;
+
             var item = GrdData.SelectedItem as Model.Schedules;
             item.PlantCode = CboPlantCode.SelectedValue.ToString();
             item.SchDate = DateTime.Parse(DtpSchDate.Text);
             item.SchLoadTime = int.Parse(TxtSchLoadTime.Text);
-            item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
-            item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchStartTime.SelectedDateTime != null)
+                item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchEndTime.SelectedDateTime != null)
+                item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+
             item.SchFacilityID = CboSchFacilityID.SelectedValue.ToString();
             item.SchAmount = (int)NudSchAmount.Value;
 
@@ -238,7 +242,7 @@ namespace MRPApp.View.Schedule
                 {
                     Commons.LOGGER.Error("데이터 수정시 오류발생");
                     await Commons.ShowMessageAsync("오류", "데이터 수정실패!!");
-                }
+                } 
                 else
                 {
                     Commons.LOGGER.Info($"데이터 수정 성공 : {item.SchIdx}"); // 로그
@@ -270,13 +274,13 @@ namespace MRPApp.View.Schedule
         {
             var search = DtpSearchDate.Text;
             var list = Logic.DataAccess.GetSchedules().Where(s => s.SchDate.Equals(DateTime.Parse(search))).ToList();
-
+                
             this.DataContext = list;
         }
 
         private void GrdData_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            ClearInputs();
+            ClearInputs(); 
 
             try
             {
@@ -285,10 +289,9 @@ namespace MRPApp.View.Schedule
                 CboPlantCode.SelectedValue = item.PlantCode;
                 DtpSchDate.Text = item.SchDate.ToString();
                 TxtSchLoadTime.Text = item.SchLoadTime.ToString();
-
-                if(item.SchStartTime != null)
+                if (item.SchStartTime != null)
                     TmpSchStartTime.SelectedDateTime = new DateTime(item.SchStartTime.Value.Ticks);
-                if(item.SchEndTime != null)
+                if (item.SchEndTime != null)
                     TmpSchEndTime.SelectedDateTime = new DateTime(item.SchEndTime.Value.Ticks);
 
                 CboSchFacilityID.SelectedValue = item.SchFacilityID;
@@ -299,6 +302,6 @@ namespace MRPApp.View.Schedule
                 Commons.LOGGER.Error($"예외발생 {ex}");
                 ClearInputs();
             }
-        }
+        }       
     }
 }

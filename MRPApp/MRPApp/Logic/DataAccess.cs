@@ -40,7 +40,7 @@ namespace MRPApp.Logic
             }
         }
 
-        public static List<Schedules> GetSchedules()
+        internal static List<Schedules> GetSchedules()
         {
             List<Model.Schedules> list;
 
@@ -50,11 +50,30 @@ namespace MRPApp.Logic
             return list;
         }
 
-        public static int SetSchedule(Schedules item)
+        internal static int SetSchedule(Schedules item)
         {
             using (var ctx = new MRPEntities())
             {
                 ctx.Schedules.AddOrUpdate(item); // INSERT or UPDATE
+                return ctx.SaveChanges(); // COMMIT
+            }
+        }
+
+        internal static List<Process> GetProcesses()
+        {
+            List<Model.Process> list;
+
+            using (var ctx = new MRPEntities())
+                list = ctx.Process.ToList(); // SELECT
+
+            return list;
+        }
+
+        internal static int SetProcess(Process item)
+        {
+            using (var ctx = new MRPEntities())
+            {
+                ctx.Process.AddOrUpdate(item); // INSERT | UPDATE
                 return ctx.SaveChanges(); // COMMIT
             }
         }
