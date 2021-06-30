@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,15 +19,15 @@ namespace MRPApp.View.Process
     /// <summary>
     /// ProcessView.xaml에 대한 상호 작용 논리
     /// 1. 공정계획에서 오늘의 생산계획 일정 불러옴
-    /// 2. 없으면 에러표시, 시작버튼 클릭하지 못하게 만듬
+    /// 2. 없으면 에러표시, 시작버튼을 클릭하지 못하게 만듦
     /// 3. 있으면 오늘의 날짜를 표시, 시작버튼 활성화
-    /// 3.1. Mqtt Subscription 연결 factory1/machine1/data 확인...
-    /// 4. 시작버튼 클릭시 새 공정을 생성, DB에 입력
-    ///    공정코드 : PRC20210618001 (PRC+yyyy+MM+dd+NNN)
+    ///     3-1. MQTT Subscription 연결 factory1/machine1/data 확인
+    /// 4. 시작버튼 클릭시 새 공정 생성, DB에 입력
+    ///    공정코드 : PRC20210628001 (PRC+yyyy+MM+dd+NNN)
     /// 5. 공정처리 애니메이션 시작
-    /// 6. 로드타임 후 애니메이션 중지 
-    /// 7. 센서링값 리턴될때까지 대기
-    /// 8. 센서링 결과값에 따라서 생산품 색상 변경
+    /// 6. 로드 타임 후 애니메이션 중지
+    /// 7. 센서링값 리턴될 때까지 대기
+    /// 8. 센서링 결과 값에 따라서 생산품 색상 변경
     /// 9. 현재 공정의 DB값 업데이트
     /// 10. 결과 레이블 값 수정/표시
     /// </summary>
@@ -48,8 +47,7 @@ namespace MRPApp.View.Process
             {
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
                 currSchedule = Logic.DataAccess.GetSchedules().Where(s => s.PlantCode.Equals(Commons.PLANTCODE))
-                                .Where(s => s.SchDate.Equals(DateTime.Parse(today))).FirstOrDefault();
-                
+                    .Where(s => s.SchDate.Equals(DateTime.Parse(today))).FirstOrDefault();
                 if (currSchedule == null)
                 {
                     await Commons.ShowMessageAsync("공정", "공정계획이 없습니다. 계획일정을 먼저 입력하세요");
@@ -68,7 +66,8 @@ namespace MRPApp.View.Process
                     LblSchAmount.Content = $"{currSchedule.SchAmount} 개";
                     BtnStartProcess.IsEnabled = true;
 
-                    InitConnectMqttBroker(); // 공정시작시 MQTT 브로커에 연결
+                    UpdateData();
+                    InitConnectMqttBroker(); //공정시작시 MQTT 브로커에 연결
                 }
             }
             catch (Exception ex)
@@ -88,9 +87,9 @@ namespace MRPApp.View.Process
             client = new MqttClient(brokerAddress);
             client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
             client.Connect("Monitor");
-            client.Subscribe(new string[] { "factory1/machine1/data/" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
+            client.Subscribe(new string[] { "factory1/machine1/data/" },
+                                new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });
 
-            timer = new Timer();
             timer.Enabled = true;
             timer.Interval = 1000;
             timer.Elapsed += Timer_Elapsed;
@@ -99,17 +98,54 @@ namespace MRPApp.View.Process
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (sw.Elapsed.Seconds >= 2) // 2초 대기후 일처리
+            if (sw.Elapsed.Seconds >= 2) // 2초 대기 후 일 처리
             {
                 sw.Stop();
                 sw.Reset();
-                MessageBox.Show(currentData["PRC_MSG"]);
-            }    
+                if (currentData["PRC_MSG"] == "OK")
+                {
+                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                    {
+                        Product.Fill = new SolidColorBrush(Colors.Green);
+                    }));
+                }
+                else if (currentData["PRC_MSG"] == "FAIL")
+                {
+                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                    {
+                        Product.Fill = new SolidColorBrush(Colors.Red);
+                    }));
+                }
+
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                {
+                    UpdateData();
+                }));
+            }
+        }
+
+        private void UpdateData()
+        {
+            // 성공 수량
+            var prcOkAmount = Logic.DataAccess.GetProcesses().Where(p => p.SchIdx.Equals(currSchedule.SchIdx))
+                                .Where(p => p.PrcResult.Equals(true)).Count();
+            // 실패 수량
+            var prcFailAmount = Logic.DataAccess.GetProcesses().Where(p => p.SchIdx.Equals(currSchedule.SchIdx))
+                                .Where(p => p.PrcResult.Equals(false)).Count();
+            // 공정 성공률
+            var prcOkRate = ((double)prcOkAmount / (double)currSchedule.SchAmount) * 100;
+            // 공정 실패율
+            var prcFailRate = ((double)prcFailAmount / (double)currSchedule.SchAmount) * 100;
+
+            LblPrcOkAmount.Content = $"{prcOkAmount} 개";
+            LblPrcFailAmount.Content = $"{prcFailAmount} 개";
+            LblPrcOkRate.Content = $"{prcOkRate} %";
+            LblPrcFailRate.Content = $"{prcFailRate} %";
         }
 
         Dictionary<string, string> currentData = new Dictionary<string, string>();
 
-        private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        private void Client_MqttMsgPublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
         {
             var message = Encoding.UTF8.GetString(e.Message);
             currentData = JsonConvert.DeserializeObject<Dictionary<string, string>>(message);
@@ -129,13 +165,13 @@ namespace MRPApp.View.Process
             Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             {
                 DoubleAnimation ba = new DoubleAnimation();
-                ba.From = 1; // 이미지 보임
-                ba.To = 0; // 이미지 보이지 않음
+                ba.From = 1;    //이미지 보임
+                ba.To = 0;      //이미지 보이지 않음
                 ba.Duration = TimeSpan.FromSeconds(2);
                 ba.AutoReverse = true;
                 //ba.RepeatBehavior = RepeatBehavior.Forever;
 
-                Sensor.BeginAnimation(OpacityProperty, ba);
+                Sensor.BeginAnimation(Canvas.OpacityProperty, ba);
             }));
         }
 
@@ -155,7 +191,7 @@ namespace MRPApp.View.Process
             item.PrcStartTime = currSchedule.SchStartTime;
             item.PrcEndTime = currSchedule.SchEndTime;
             item.PrcFacilityID = Commons.FACILITYID;
-            item.PrcResult = true; // 공정성공 일단 픽스
+            item.PrcResult = true; // 공정 성공으로 시작
             item.RegDate = DateTime.Now;
             item.RegID = "MRP";
 
@@ -182,26 +218,28 @@ namespace MRPApp.View.Process
             }
         }
 
+        // 공정코드 생성
         private string GetProcessCodeFromDB()
         {
             var prefix = "PRC";
             var prePrcCode = prefix + DateTime.Now.ToString("yyyyMMdd"); // PRC20210629
-            var resultCode = string.Empty; 
+            var resultCode = string.Empty;
 
-            // 이전까지 공정이 없어 (PRC20210629... ) null이 넘어오고
-            // PRC20210620001, 002, 003, 004 --> PRC20210629004
-            var maxPrc = Logic.DataAccess.GetProcesses().Where(p => p.PrcCD.Contains(prePrcCode))
+            // 이전까지 공정이 없는경우(PRC20210629~) null이 넘어오고
+            // PRC20210629001, 002, 003, 004가 있는경우 PRC20210629004가 넘어온다.
+            var maxCode = Logic.DataAccess.GetProcesses().Where(p => p.PrcCD.Contains(prePrcCode))
                                 .OrderByDescending(p => p.PrcCD).FirstOrDefault();
-            if (maxPrc == null)
+
+            if (maxCode == null)
             {
-                resultCode = prePrcCode + 1.ToString("000"); // 당일 공정코드 최초값
+                resultCode = prePrcCode + "001";
             }
             else
             {
-                var maxPrcCd = maxPrc.PrcCD; // PRC20210629004
+                var maxPrcCd = maxCode.PrcCD; // PRC20210629004
                 var maxVal = int.Parse(maxPrcCd.Substring(11)) + 1; // 004 --> 4 + 1 --> 5
 
-                resultCode = prePrcCode + maxVal.ToString("000"); // 최대공정코드 + 1값
+                resultCode = prePrcCode + maxVal.ToString("000");   // 최대공정코드 +1 값
             }
 
             return resultCode;
@@ -209,12 +247,14 @@ namespace MRPApp.View.Process
 
         private void StartAnimation()
         {
+            Product.Fill = new SolidColorBrush(Colors.Gray);
+
             // 기어 애니메이션 속성
             DoubleAnimation da = new DoubleAnimation();
             da.From = 0;
             da.To = 360;
-            da.Duration = TimeSpan.FromSeconds(currSchedule.SchLoadTime); // 일정 계획로드타임
-            //da.RepeatBehavior = RepeatBehavior.Forever;
+            da.Duration = TimeSpan.FromSeconds(currSchedule.SchLoadTime); // 일정의 계획로드타임
+            //da.RepeatBehavior = RepeatBehavior.Forever;   // 무한반복
 
             RotateTransform rt = new RotateTransform();
             Gear1.RenderTransform = rt;
@@ -227,12 +267,19 @@ namespace MRPApp.View.Process
             // 제품 애니메이션 속성
             DoubleAnimation ma = new DoubleAnimation();
             ma.From = 151;
-            ma.To = 547; // 옮겨지는 x값의 최대값
+            ma.To = 547;    // 옮겨지는 x값의 최대값
             ma.Duration = TimeSpan.FromSeconds(currSchedule.SchLoadTime);
-            // ma.AccelerationRatio = 0.5;
-            // ma.AutoReverse = true;
+            //ma.AccelerationRatio = 0.5;   // 가속
+            //ma.AutoReverse = true;        // 왔다갔다 반복
 
-            Product.BeginAnimation(Canvas.LeftProperty, ma);            
+            Product.BeginAnimation(Canvas.LeftProperty, ma);
         }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // 자원해제
+            if (client.IsConnected) client.Disconnect();
+            timer.Dispose();
+        } 
     }
 }
