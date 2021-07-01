@@ -63,6 +63,7 @@ namespace MRPApp.View.Report
             ChtReport.Series.Add(series1);
             ChtReport.Series.Add(series2);
             ChtReport.Series.Add(series3);
+
             ChtReport.AxisX.First().Labels = list.Select(a => a.PrcDate.ToString("yyyy-MM-dd")).ToList();
         }
 
@@ -88,7 +89,17 @@ namespace MRPApp.View.Report
         {
             var result = true;
 
-            // TODO : 검증은 내일까지! 
+            if (DtpSearchStartDate.SelectedDate == null || DtpSearchEndDate.SelectedDate == null)
+            {
+                Commons.ShowMessageAsync("검색", "검색할 일자를 선택하세요");
+                result = false;
+            }
+
+            if (DtpSearchStartDate.SelectedDate > DtpSearchEndDate.SelectedDate)
+            {
+                Commons.ShowMessageAsync("검색", "시작일자가 종료일자보다 최신일 수 없습니다");
+                result = false;
+            }
 
             return result;
         }
